@@ -1,6 +1,9 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import rocketSVG from "../assets/rocket.svg";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Rockets = () => {
   const skills = [
@@ -8,11 +11,12 @@ const Rockets = () => {
     { name: "JavaScript & TypeScript", level: 85 },
     { name: "HTML/CSS/Tailwind", level: 95 },
     { name: "Databases (PostgreSQL, MySQL, OpenSearch)", level: 80 },
-    { name: "Tools (NestJS, Expo, Git, Craft CMS)", level: 75 },
-    { name: "3D Libraries (Three.js, Babylon.js)", level: 70 },
+    { name: "Tools", level: 75 },
+    { name: "3D Libraries", level: 70 },
   ];
 
   const barsRef = useRef([]);
+  const containerRef = useRef(null); // Reference for the whole component
 
   useEffect(() => {
     const sortedIndices = [...skills]
@@ -27,16 +31,16 @@ const Rockets = () => {
         ease: "power2.out",
         stagger: 0.3,
         scrollTrigger: {
-          trigger: barsRef.current[0],
-          start: "bottom 0%",
-          toggleActions: "play none none none",
+          trigger: containerRef.current, // Trigger the animation when the whole component scrolls into view
+          start: "top 80%", // Adjust when the animation starts (80% from the top of the viewport)
+          toggleActions: "play none none none", // Play once when in view
         },
       }
     );
   }, [skills]);
 
   return (
-    <div className="w-screen h-[50vh] bg-[#121316] text-white flex flex-col justify-center items-center">
+    <div ref={containerRef} className="w-screen h-[50vh] bg-[#121316] text-white flex flex-col justify-center items-center">
       <h1 className="text-4xl mb-8">Technical Skills</h1>
       <div className="grid grid-cols-6 gap-6 w-3/4">
         {skills.map((skill, index) => (
@@ -53,7 +57,6 @@ const Rockets = () => {
                   alt="rocket"
                 />
                 <div
-                  ref={(el) => (barsRef.current[index] = el)}
                   className="w-full"
                   style={{
                     height: "100%",
